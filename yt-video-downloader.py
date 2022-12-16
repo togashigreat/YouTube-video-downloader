@@ -39,16 +39,16 @@ choosen = int(input("Enter Oppai number of the video: "))
 
 if choosen == 1:
     print("downloading.....")
-    video720[0].download("/data/data/com.termux/files/home/storage/downloads")
-    print("downloaded successfully:3")
+    video720[0].download()
+    print("downloaded successfully")
 
 if choosen == 2:
     print("downloading.....")
-    video480[0].download("/data/data/com.termux/files/home/storage/downloads")
+    video480[0].download()
     print("downloaded successfully:3")
 if choosen == 3:
     print("downloading.....")
-    video360[0].download("/data/data/com.termux/files/home/storage/downloads")
+    video360[0].download()
     print("downloaded successfully:3")
 
 
