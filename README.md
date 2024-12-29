@@ -1,4 +1,4 @@
-# YouTube-video-downloader
+# YouTube Video/Audio downloader
 
 Easily download YouTube Videos and Audios using this script.
 
