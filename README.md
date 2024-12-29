@@ -1,11 +1,31 @@
 # YouTube-video-downloader
-#To use this file you need to install a python library 
 
-``pip3 install pytube``
+Easily download YouTube Videos and Audios using this script.
 
-run this code 
 
-``python3 yt-video-downloader.py``
+### Requirements
 
-copy the video url from YouTube that you want to download
-then paste it, select video Resolution and video will be downloaded.
+```bash
+pip install pytubefix
+```
+You need to install ffmpeg 
+
+```bash
+#Linux
+sudo apt install ffmpeg
+
+```
+
+For windows and MacOs download the ffmpeg from the website.
+If you don't know how then follow this [tutorial](https://www.geeksforgeeks.org/how-to-install-ffmpeg-on-windows/)
+
+
+### Usage
+
+To use it run the script.
+
+```bash
+python3 yt.py 
+```
+
+Copy the video url from YouTube that you want to download and then paste it. It will show a list of video and audios select video Resolution and video will be downloaded.
