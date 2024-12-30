@@ -7,10 +7,18 @@ import sys
 import re
 
 
-def sanitize_filename(filename):
-    # Replace invalid characters with an underscore
-    return re.sub(r'[<>:"/\\|?*\']', '_', filename)
+# def sanitize_filename(filename):
+#     # Replace invalid characters with an underscore
+#     return re.sub(r'[<>:"/\\|?*\']', '_', filename)
 CONFIG_FILE = os.path.join(os.path.expanduser("~"), ".yt_downloader.json")
+def sanitize_filename(filename):
+    """Sanitize the filename to make it file-system safe."""
+    # Replace invalid characters with an underscore
+    sanitized = re.sub(r'[<>:"/\\|?*\']', '_', filename)
+    # Remove trailing periods or spaces
+    sanitized = sanitized.strip().strip(". ")
+    # Limit filename length to avoid issues
+    return sanitized[:255]
 
 
 def setup_config():
@@ -30,7 +38,12 @@ def save_config(download_path):
     with open(CONFIG_FILE, "w") as f:
         json.dump({"download_path": download_path}, f)
 
-print(f"\n  \x1b[38;5;203m    YouTube Video Downloader\x1b[0m\n\x1b[38;5;167m{'='*40}\x1b[0m\n" )
+print(f"\n  \x1b[1;38;5;203m    YouTube Video Downloader\x1b[0m\n\x1b[38;5;167m{'='*40}\x1b[0m\n" )
+
+p = "\x1b[38;5;69m"
+end = "\x1b[0m"
+ainfo = "\x1b[38;5;220m"
+info = "\x1b[1;38;5;40m"
 
 def get_videos():
     """Download video/audio and handle high-quality merging."""
@@ -39,16 +52,22 @@ def get_videos():
 
     all_streams = results.streams
     videos = [video for video in all_streams if video.mime_type == "video/mp4"]
-    audios = [audio for audio in all_streams if audio.mime_type in {"audio/mp4", "audio/webm"}]
+    audios = [audio for audio in all_streams if audio.mime_type in ("audio/mp4", "audio/webm")]
 
-    print(f"\n\x1b[38;5;33mVideo Title\x1b[0m: \x1b[38;5;42m{results.title}\x1b[0m\n")
+    print(f"\n\x1b[38;5;39mVideo Title{end}: \x1b[38;5;42m{results.title}\x1b[0m\n")
+    print(f"\x1b[38;5;39mDuration{end}: \x1b[38;5;42m{results.length/60:.2f} Minutes{end}")
+
+
     print(f"\n\x1b[38;5;220m{' '*14}Video\n{'_'*40}\x1b[0m\n")
     for i, video in enumerate(videos, start=1):
-        print(f" \x1b[38;5;220m{i}. Resolution: {video.resolution}, Size: {video._filesize_mb} MB, Progressive: {video.is_progressive}\x1b[0m")
+        print(f" {info}{i}. Resolution:{end} {p}{video.resolution}{end}{info}, Size:{end} {p}{video._filesize_mb} MB{end}")
 
-    print(f"\n{' '*14}\x1b[38;5;44mAudio\n{'_'*36}\x1b[0m\n")
+    print(f"\n{' '*14}\x1b[38;5;220mAudio\n{'_'*36}\x1b[0m\n")
     for i, audio in enumerate(audios, start=len(videos) + 1):
-        print(f" \x1b[38;5;45m{i}. Bitrate: {audio.abr}, Size: {audio._filesize_mb} MB\x1b[0m")
+        print(f" {info}{i}. Bitrate:{end} {p}{audio.abr}{end}{info}, Size:{end} {p}{audio._filesize_mb} MB{end}")
+
+
+
 
     index = int(input("\n\x1b[38;5;217mChoose a number\x1b[0m: "))
 
@@ -72,7 +91,7 @@ def get_videos():
             print("\n\x1b[38;5;43m[•] Downloading video...\x1b[0m")
             chosen_video.download(output_path=tmp_download_path, filename="video.mp4")
 
-            print("\x1b[38;5;43m[•] Downloading audio...\x1b[0m")
+            print("\n\x1b[38;5;43m[•] Downloading audio...\x1b[0m")
             best_audio = audios[-1]  # Pick the best available audio
             best_audio.download(output_path=tmp_download_path, filename="audio.mp4")
 
@@ -83,8 +102,8 @@ def get_videos():
             os.remove(f"{tmp_download_path}/video.mp4")
             os.remove(f"{tmp_download_path}/audio.mp4")
 
-            print("\x1b[38;5;41m[•] Successfully merged Video and Audio ✓\x1b[0m\n")
-            print(f"\n\x1b[38;5;41m[•] Saved in {output_path}/{sanitized_title}.mp4 ✓\x1b[0m\n")
+            print("\n\x1b[38;5;41m[•] Successfully merged Video and Audio ✓\x1b[0m\n")
+            print(f"\n\x1b[38;5;41m[•] Saved in {output_path} ✓\x1b[0m\n")
 
 
     elif index > len(videos):
